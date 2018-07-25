@@ -54,9 +54,18 @@ function retrieveTweets(){
 // Got this working!
 // function to return basic song info
 function retrieveSong(song) {
-    var song = userEntry[3]; // This has to be commented out in order for do-what-it-says to work... hmmmmmmmm probably a simple fix, but stuck.
+    // var song = userEntry[3]; // This has to be commented out in order for do-what-it-says to work... hmmmmmmmm probably a simple fix, but stuck.
+    console.log("trying to retrieve song info...")
+    var songQuery = [];
+    //
+        for (i = 3; i < userEntry.length; i++) {
+            songQuery.push(userEntry[i]);
+        }
+    
+    var song = songQuery.join("+");
+    console.log(song);
 
-    search = song
+    // search = song
 
     var spotify = new Spotify(myKeys.spotify);
 
@@ -66,35 +75,38 @@ function retrieveSong(song) {
         }
 
         else {
-            //tried to simplify data reference, but kinda failed... 
-            // rewrite this to    
-            // songInfo= data.tracks.items ... and shorten subsequent code lines
-            var songInfo = data;
+      
+            var songInfo = data.tracks.items[0]
     
             // Prints the artist(s), track name, preview url, and album name.
-            console.log("Artist(s): " + songInfo.tracks.items[0].album.artists[0].name); 
-            console.log("Song: " + songInfo.tracks.items[0].name)
-            console.log("Spotify Preview @: " + songInfo.tracks.items[0].preview_url)
-            console.log("Album: " + songInfo.tracks.items[0].album.name);
+            console.log("Artist(s): " + songInfo.album.artists[0].name); 
+            console.log("Song: " + songInfo.name)
+            console.log("Spotify Preview @: " + songInfo.preview_url)
+            console.log("Album: " + songInfo.album.name);
 	    }
     });
 }
 
 function retrieveOMDB(movieName) {
 
-    var movieName = userEntry[3]; 
-    var searchQuery = movieName.split(" ").join("+");
-    var movieKey = '60fc001c';
+    var movieName = [];
     
-    var queryURL = 'http://www.omdbapi.com/?t=' + movieName + '&plot=full&apikey=' + movieKey;
+        for (i = 3; i < userEntry.length; i++) {
+            movieName.push(userEntry[i]);
+        }
+    
+    var movie = movieName.join("+");
+    var movieKey = '60fc001c';
+    var queryURL = 'http://www.omdbapi.com/?t=' + movie + '&plot=full&apikey=' + movieKey;
 
     request(queryURL, function(err, response, body) {
 
         var movieObj = JSON.parse(body);
     
         if (err) {
-            console.log("Your movie search is broken... " + err);
+                console.log("Your movie search is broken... " + err);
         }
+
         else {
 
             var movieSummary =
@@ -108,7 +120,7 @@ function retrieveOMDB(movieName) {
             "Actors: " + movieObj.Actors + "\r\n" +
             "======------------------------======";
 
-            console.log(movieSummary);
+                console.log(movieSummary);
         }
     })
 };
